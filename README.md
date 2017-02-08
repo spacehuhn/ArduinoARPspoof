@@ -37,26 +37,26 @@ Note: I haven't test it on such protected hardware yet.
 
 ## Disclaimer
 
-Use it only for testing purposes on your own devices!
+Use it only for testing purposes in your own network!
 
 
 ## Installation
 
 You will need an Arduino and (of course) an ENC28J60.  
-If you buy an Arduino ethernet shield be sure it doesn't use a wiznet controller (e.g. w5100 or w5500), **this project will only work with an ENC28J60!**
+If you buy an Arduino ethernet shield be sure it **doesn't** use a wiznet controller (e.g. w5100 or w5500), **this project will only work with an ENC28J60!**
 
 **1. Wire everything up**
 
-To do this you need to connect both the Arduino and the controller via their SPI pins. If you're unsure how to do this, you can google for the pinout of your Arduino and the ethernet controller. There are different versions of the ENC28J60 out there. I'm useing a shield for the Arduino nano.  
+To do this you need to connect both the Arduino and the controller via their SPI pins. If you're unsure how to do this, you can google for the pinout of your Arduino and the ethernet controller. There are different versions of the ENC28J60 out there. I'm using a shield for the Arduino nano.  
 
 **2. Install library**
 
 You will need to add the ethercard library in Arduino.
-The download and the installation steps can be found on here: https://github.com/jcw/ethercard
+Files and the installation steps can be found on here: https://github.com/jcw/ethercard
 
 **3. Upload the code**
 
-Ok so now you only have to upload the ARP-spoofer code to your Arduino and your done :)
+Upload the ARP-spoofer code to the Arduino and your done :)
 
 
 ## How to use it
@@ -71,5 +71,5 @@ This project is licensed under the MIT License - see the [license file](LICENSE)
 
 ## Sources and additional links
 
-ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing
+ARP spoofing: https://en.wikipedia.org/wiki/ARP_spoofing  
 ENC28J60: http://www.microchip.com/wwwproducts/en/en022889

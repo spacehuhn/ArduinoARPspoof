@@ -1,6 +1,7 @@
 # enc28j60_ARPspoofer
 Kicks out everyone in your LAN with an enc28j60 ethernet controller and Arduino.
 
+![ENC28J60 ethernet shield + Arduino nano plugged in and working](https://raw.githubusercontent.com/spacehuhn/enc28j60_ARPspoofer/master/images/1.jpg)
 
 ## Contents
 - [Introduction](#introduction)
@@ -28,6 +29,8 @@ It will send an ARP reply every 2 seconds to everyone in the LAN that the gatewa
 ### What an ENC28J60 is
 
 The ENC28J60 is a cheap 10mbit SPI ethernet controller for Arduino. Because it has an very open and easy hackable library it's perfect for this project and you could even programm a man-in-the-middle attack or other funny stuff with it.
+
+![ENC28J60 ethernet shield and an Arduino nano](https://raw.githubusercontent.com/spacehuhn/enc28j60_ARPspoofer/master/images/3.jpg)
 
 ### How to protect against it
 

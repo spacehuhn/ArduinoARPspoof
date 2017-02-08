@@ -19,7 +19,7 @@ Kicks out everyone in your LAN with an enc28j60 ethernet controller and Arduino.
 
 ### What it is
 
-Using an Arduino with an ethernet controller, this device will perform an ARP spoofing/poisoning attack to diconnect every client device in your LAN.
+Using an Arduino with an ethernet controller, this device will perform an [ARP spoofing](https://en.wikipedia.org/wiki/ARP_spoofing) attack to diconnect every client device in your LAN.
 
 ### How it works
 

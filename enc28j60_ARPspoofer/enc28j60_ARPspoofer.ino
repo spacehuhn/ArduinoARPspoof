@@ -12,19 +12,21 @@ bool toggle_status = false;
 bool tmp_status = true;
 int arp_count = 0;
 char pwholder;
+long prevTime;
 
 ////////////////////////
 //ENABLE WEB INTERFACE// 
 //     true = ON      //
 //    false = OFF     //
 ////////////////////////
-bool web_en = true;
+bool web_en = false;
 
 //Set password here
 char* auth_password = "ARP";
 //Set DEBUG status
 bool debug = false;
-
+//Set packet rate (e.g. 1500 = every 1.5 seconds)
+int packetRate = 1500; 
 
 //ARP reply packet
 uint8_t _data[48] = {
@@ -55,6 +57,23 @@ static int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
+bool sendARP(){
+  long curTime = millis();
+  if(prevTime < curTime-packetRate){
+    digitalWrite(13, HIGH);
+    for(int i=0;i<48;i++) ether.buffer[i] = _data[i];
+          
+    ether.packetSend(48);
+    if(debug)Serial.println("APR PACKET SENT.");
+    arp_count++;
+  
+    prevTime = curTime;
+    digitalWrite(13, LOW);
+    return true;
+  }
+  return false;
+}
+
 void _connect(){
   if(!ether.dhcpSetup()){
     Serial.println("DHCP failed");
@@ -79,7 +98,7 @@ void _connect(){
 }
 
 void setup () {
-  pinMode(13, OUTPUT); 
+  pinMode(13, OUTPUT); //status LED
   Serial.begin(115200);
   Serial.println("ready!");
   Serial.println("waiting for LAN connection...");
@@ -92,6 +111,7 @@ void setup () {
     delay(1000);
   }
   
+  prevTime = millis();
   
 }
 
@@ -151,12 +171,14 @@ if(web_en){
     // Output HTML page        
     BufferFiller bfill = ether.tcpOffset();
     bfill.emit_p(PSTR("HTTP/1.0 200 OK\r\n"
-      "Content-Type: text/html\r\nPragma: no-cache\r\n\r\n"
-      "<html><head><title>ARP Panel</title></head>"
+      "Content-Type: text/html\r\n\r\n"
+      "<html><body><head><title>ARP Panel</title></head>"
+      "<h1>ARP Spoofer - WebPanel</h1><br>"
+      "More info on the <a href=\"https://github.com/spacehuhn/enc28j60_ARPspoofer\">GitHub</a> page"
       "<body><form method=\"POST\">"));
     // Enable / disable buttons based on the output status
-    if(toggle_status == true) bfill.emit_p(PSTR("</p><div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
-    else bfill.emit_p(PSTR("</p><div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
+    if(toggle_status == true) bfill.emit_p(PSTR("<div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
+    else bfill.emit_p(PSTR("<div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
 
     // A wrong password was entered?
     if(password_valid == true){ 
@@ -174,24 +196,16 @@ if(web_en){
     bfill.emit_p(PSTR("MY IP: $D"), ether.myip);  
     bfill.emit_p(PSTR("Gateway IP: $D"), ether.gwip);  
     bfill.emit_p(PSTR("DNS IP: $D"), ether.dnsip);
-    */     
+    */
+    bfill.emit_p(PSTR("</div>"));     
     ether.httpServerReply(bfill.position());
   }else{
       tmp_status = true;
       if(connection){
       if(toggle_status){
         if(tmp_status) {
-        digitalWrite(13, HIGH); // Turn on STATUS LED
-        
-        //Reset Buffer
-        for(int i=0;i<48;i++) ether.buffer[i] = _data[i];
-        
-        ether.packetSend(48);
-        if(debug)Serial.println("APR PACKET SENT.                  ");
-        ++arp_count;
-        //delay(1000); //Disabled due to lag with disabling on web interface, This is due to arduino not being multithread.
-        digitalWrite(13, LOW);
-        tmp_status = false;
+          sendARP();
+          tmp_status = false;
         }
       }
     }else{
@@ -199,14 +213,9 @@ if(web_en){
     }
    } 
 }else{
-  if(connection){
-    digitalWrite(13, HIGH); // Turn on STATUS LED
-    ether.packetSend(48);
-    Serial.println("APR PACKET SENT.                  ");
-    delay(1500);
-    digitalWrite(13, LOW);
-  }else{
-    digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
-  }
+  if(connection) sendARP();
+  else digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
 }
+
 }
+

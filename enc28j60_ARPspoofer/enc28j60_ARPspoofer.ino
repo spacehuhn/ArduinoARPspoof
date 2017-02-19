@@ -1,3 +1,7 @@
+/*
+* Source: https://github.com/spacehuhn/enc28j60_ARPspoofer
+*/
+ 
 #include <enc28j60.h>
 #include <EtherCard.h>
 #include <net.h>
@@ -59,7 +63,8 @@ static int freeRam () {
 
 bool sendARP(){
   long curTime = millis();
-  if(prevTime < curTime-packetRate){
+  
+  if(prevTime < curTime - packetRate){
     digitalWrite(13, HIGH);
     for(int i=0;i<48;i++) ether.buffer[i] = _data[i];
           
@@ -71,6 +76,7 @@ bool sendARP(){
     digitalWrite(13, LOW);
     return true;
   }
+  
   return false;
 }
 
@@ -116,105 +122,106 @@ void setup () {
 }
 
 void loop () {
-if(web_en){
-  word len = ether.packetReceive();
-  word pos = ether.packetLoop(len);
-  tmp_status = false;
-  if(pos) {
-    Serial.println();
-    boolean password_valid = true; 
+  if(web_en){
+    word len = ether.packetReceive();
+    word pos = ether.packetLoop(len);
+    tmp_status = false;
+  
+    if(pos) {
+      Serial.println();
+      boolean password_valid = true; 
     
-    // is it a POST request?
-    if(strstr((char *)Ethernet::buffer + pos, "POST /") != 0) {
+      // is it a POST request?
+      if(strstr((char *)Ethernet::buffer + pos, "POST /") != 0) {
       
-      if(debug)Serial.println("New POST request!");
+        if(debug)Serial.println("New POST request!");
       
-      // search and verify the password
-      char password[20];      
-      char* password_position = strstr((char *)Ethernet::buffer + pos, "&pwd=");
-      if(password_position != 0) {
-        strcpy(password, password_position + 5);
-        if(debug)Serial.print("Found password=");
-        if(debug)Serial.println(password);
-        if(strcmp(password, auth_password) == 0){ 
-          if(debug)Serial.println("Valid password :)");
-          
-        }else {
-          if(debug)Serial.println("Wrong password :(");
-          password_valid = false;
-          pwholder = "";
-        }
-      }
-      
-      // search for ON= or OFF= command
-      if(password_valid) {
-        pwholder = password;
-        // OFF command
-        if(strstr((char *)Ethernet::buffer + pos, "OFF=") != 0) {
-          if(toggle_status){
-            Serial.println("ARP OFF");
-            toggle_status = false;
-            tmp_status = true;
+        // search and verify the password
+        char password[20];      
+        char* password_position = strstr((char *)Ethernet::buffer + pos, "&pwd=");
+        if(password_position != 0) {
+          strcpy(password, password_position + 5);
+          if(debug)Serial.print("Found password=");
+          if(debug)Serial.println(password);
+          if(strcmp(password, auth_password) == 0){ 
+            if(debug)Serial.println("Valid password :)");
+            
+          }else {
+            if(debug)Serial.println("Wrong password :(");
+            password_valid = false;
+            pwholder = "";
           }
-        
-        // ON command
-        } else if(strstr((char *)Ethernet::buffer + pos, "ON=") != 0) {
-          Serial.println("ARP ON");
-          toggle_status = true;
-          tmp_status = true;          
-        } else if(debug)Serial.println("Unknown command :(");
-      }
-    }else{
-      tmp_status = true;
-    }      
-    
-    // Output HTML page        
-    BufferFiller bfill = ether.tcpOffset();
-    bfill.emit_p(PSTR("HTTP/1.0 200 OK\r\n"
-      "Content-Type: text/html\r\n\r\n"
-      "<html><body><head><title>ARP Panel</title></head>"
-      "<h1>ARP Spoofer - WebPanel</h1><br>"
-      "More info on the <a href=\"https://github.com/spacehuhn/enc28j60_ARPspoofer\">GitHub</a> page"
-      "<body><form method=\"POST\">"));
-    // Enable / disable buttons based on the output status
-    if(toggle_status == true) bfill.emit_p(PSTR("<div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
-    else bfill.emit_p(PSTR("<div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
-
-    // A wrong password was entered?
-    if(password_valid == true){ 
-      bfill.emit_p(PSTR("<div><input style=\"width: 200px\" type=\"password\" value=\"\" name=\"pwd\"></div></form></body>"));
-    }else bfill.emit_p(PSTR("<div><input style=\"width: 200px\" type=\"password\"  name=\"pwd\">Wrong password</div></form></body>"));
-    
-    long t = millis() / 1000;
-    word h = t / 3600;
-    byte m = (t / 60) % 60;
-    byte s = t % 60;
-    bfill.emit_p(PSTR("Current Uptime: $D$D:$D$D:$D$D<br>"), h/10, h%10, m/10, m%10, s/10, s%10);
-    bfill.emit_p(PSTR("Current ARP Count: $D<br>"),arp_count);
-    bfill.emit_p(PSTR("Free RAM: $D bytes<br>"), freeRam()); 
-    /* //PROBLEMS WITH DISPLAYING IP'S
-    bfill.emit_p(PSTR("MY IP: $D"), ether.myip);  
-    bfill.emit_p(PSTR("Gateway IP: $D"), ether.gwip);  
-    bfill.emit_p(PSTR("DNS IP: $D"), ether.dnsip);
-    */
-    bfill.emit_p(PSTR("</div>"));     
-    ether.httpServerReply(bfill.position());
-  }else{
-      tmp_status = true;
-      if(connection){
-      if(toggle_status){
-        if(tmp_status) {
-          sendARP();
-          tmp_status = false;
         }
-      }
-    }else{
-      digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
-    }
-   } 
-}else{
-  if(connection) sendARP();
-  else digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
-}
+      
+        // search for ON= or OFF= command
+        if(password_valid) {
+          pwholder = password;
+          
+          // OFF command
+          if(strstr((char *)Ethernet::buffer + pos, "OFF=") != 0) {
+            if(toggle_status){
+              Serial.println("ARP OFF");
+              toggle_status = false;
+              tmp_status = true;
+            }
+          
+          // ON command
+          } else if(strstr((char *)Ethernet::buffer + pos, "ON=") != 0) {
+            Serial.println("ARP ON");
+            toggle_status = true;
+            tmp_status = true;          
+          } else if(debug)Serial.println("Unknown command :(");
+          
+        }
+      }else{
+        tmp_status = true;
+      }      
+    
+      // Output HTML page        
+      BufferFiller bfill = ether.tcpOffset();
+      
+      bfill.emit_p(PSTR("HTTP/1.0 200 OK\r\n"
+        "Content-Type: text/html\r\n\r\n"
+        "<html><body><head><title>ARP Panel</title></head>"
+        "<h1>ARP Spoofer - WebPanel</h1><br>"
+        "More info on the <a href=\"https://github.com/spacehuhn/enc28j60_ARPspoofer\">GitHub</a> page"
+        "<body><form method=\"POST\">"));
+      
+      // Enable / disable buttons based on the output status
+      if(toggle_status == true) bfill.emit_p(PSTR("<div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
+      else bfill.emit_p(PSTR("<div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
 
+      // A wrong password was entered?
+      if(password_valid == true) bfill.emit_p(PSTR("<div><input style=\"width: 200px\" type=\"password\" value=\"\" name=\"pwd\"></div></form></body>"));
+      else bfill.emit_p(PSTR("<div><input style=\"width: 200px\" type=\"password\"  name=\"pwd\">Wrong password</div></form></body>"));
+    
+      long t = millis() / 1000;
+      word h = t / 3600;
+      byte m = (t / 60) % 60;
+      byte s = t % 60;
+      bfill.emit_p(PSTR("Current Uptime: $D$D:$D$D:$D$D<br>"), h/10, h%10, m/10, m%10, s/10, s%10);
+      bfill.emit_p(PSTR("Current ARP Count: $D<br>"),arp_count);
+      bfill.emit_p(PSTR("Free RAM: $D bytes<br>"), freeRam()); 
+      
+      /* //PROBLEMS WITH DISPLAYING IP'S
+      bfill.emit_p(PSTR("MY IP: $D"), ether.myip);  
+      bfill.emit_p(PSTR("Gateway IP: $D"), ether.gwip);  
+      bfill.emit_p(PSTR("DNS IP: $D"), ether.dnsip);
+      */
+    
+      bfill.emit_p(PSTR("</div>"));     
+      ether.httpServerReply(bfill.position());
+    }else{
+      tmp_status = true;
+      if(connection && toggle_status && tmp_status){
+        sendARP();
+        tmp_status = false;
+      }else{
+        digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
+      }
+    }
+  }else{
+    if(connection) sendARP();
+    else digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
+  }
 }

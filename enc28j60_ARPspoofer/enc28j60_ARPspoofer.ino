@@ -13,6 +13,13 @@ bool tmp_status = true;
 int arp_count = 0;
 char pwholder;
 
+////////////////////////
+//ENABLE WEB INTERFACE// 
+//     true = ON      //
+//    false = OFF     //
+////////////////////////
+bool web_en = true;
+
 //Set password here
 char* auth_password = "ARP";
 //Set DEBUG status
@@ -89,7 +96,7 @@ void setup () {
 }
 
 void loop () {
-
+if(web_en){
   word len = ether.packetReceive();
   word pos = ether.packetLoop(len);
   tmp_status = false;
@@ -162,7 +169,12 @@ void loop () {
     byte s = t % 60;
     bfill.emit_p(PSTR("Current Uptime: $D$D:$D$D:$D$D<br>"), h/10, h%10, m/10, m%10, s/10, s%10);
     bfill.emit_p(PSTR("Current ARP Count: $D<br>"),arp_count);
-    bfill.emit_p(PSTR("Free RAM: $D bytes<br>"), freeRam());      
+    bfill.emit_p(PSTR("Free RAM: $D bytes<br>"), freeRam()); 
+    /* //PROBLEMS WITH DISPLAYING IP'S
+    bfill.emit_p(PSTR("MY IP: $D"), ether.myip);  
+    bfill.emit_p(PSTR("Gateway IP: $D"), ether.gwip);  
+    bfill.emit_p(PSTR("DNS IP: $D"), ether.dnsip);
+    */     
     ether.httpServerReply(bfill.position());
   }else{
       tmp_status = true;
@@ -186,6 +198,15 @@ void loop () {
       digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
     }
    } 
-  
-
+}else{
+  if(connection){
+    digitalWrite(13, HIGH); // Turn on STATUS LED
+    ether.packetSend(48);
+    Serial.println("APR PACKET SENT.                  ");
+    delay(1500);
+    digitalWrite(13, LOW);
+  }else{
+    digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
+  }
+}
 }

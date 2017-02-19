@@ -66,6 +66,12 @@ Upload the ARP-spoofer code to the Arduino and your done :)
 
 Power it over USB and plug in an ethernet cable, that's all!  
 
+**Using the WebInterface:**  
+If you set `web_en = true` in the code, the Arduino won't start the attack by itself.
+You have to open its website and start the attack manually.  
+The IP will be printed out in the serial monitor and the default password is `ARP`.  
+
+Thanks to VoidTyphoon for implementing this feature.
 
 ## License
 

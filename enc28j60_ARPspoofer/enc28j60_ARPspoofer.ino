@@ -12,19 +12,21 @@ bool toggle_status = false;
 bool tmp_status = true;
 int arp_count = 0;
 char pwholder;
+long prevTime;
 
 ////////////////////////
 //ENABLE WEB INTERFACE// 
 //     true = ON      //
 //    false = OFF     //
 ////////////////////////
-bool web_en = true;
+bool web_en = false;
 
 //Set password here
 char* auth_password = "ARP";
 //Set DEBUG status
 bool debug = false;
-
+//Set acket rate (e.g. 1500 = every 1.5 seconds)
+int packetRate = 1500; 
 
 //ARP reply packet
 uint8_t _data[48] = {
@@ -55,6 +57,23 @@ static int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
+bool sendARP(){
+  long curTime = millis();
+  if(prevTime < curTime-packetRate){
+    digitalWrite(13, HIGH);
+    for(int i=0;i<48;i++) ether.buffer[i] = _data[i];
+          
+    ether.packetSend(48);
+    if(debug)Serial.println("APR PACKET SENT.");
+    arp_count++;
+  
+    prevTime = curTime;
+    digitalWrite(13, LOW);
+    return true;
+  }
+  return false;
+}
+
 void _connect(){
   if(!ether.dhcpSetup()){
     Serial.println("DHCP failed");
@@ -79,7 +98,7 @@ void _connect(){
 }
 
 void setup () {
-  pinMode(13, OUTPUT); 
+  pinMode(13, OUTPUT); //status LED
   Serial.begin(115200);
   Serial.println("ready!");
   Serial.println("waiting for LAN connection...");
@@ -92,6 +111,7 @@ void setup () {
     delay(1000);
   }
   
+  prevTime = millis();
   
 }
 
@@ -181,17 +201,8 @@ if(web_en){
       if(connection){
       if(toggle_status){
         if(tmp_status) {
-        digitalWrite(13, HIGH); // Turn on STATUS LED
-        
-        //Reset Buffer
-        for(int i=0;i<48;i++) ether.buffer[i] = _data[i];
-        
-        ether.packetSend(48);
-        if(debug)Serial.println("APR PACKET SENT.                  ");
-        ++arp_count;
-        //delay(1000); //Disabled due to lag with disabling on web interface, This is due to arduino not being multithread.
-        digitalWrite(13, LOW);
-        tmp_status = false;
+          sendARP();
+          tmp_status = false;
         }
       }
     }else{
@@ -199,14 +210,8 @@ if(web_en){
     }
    } 
 }else{
-  if(connection){
-    digitalWrite(13, HIGH); // Turn on STATUS LED
-    ether.packetSend(48);
-    Serial.println("APR PACKET SENT.                  ");
-    delay(1500);
-    digitalWrite(13, LOW);
-  }else{
-    digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
-  }
+  if(connection) sendARP();
+  else digitalWrite(13, LOW);  // No Connection, turn off STATUS LED
 }
+
 }

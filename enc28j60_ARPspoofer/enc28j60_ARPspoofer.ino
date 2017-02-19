@@ -25,7 +25,7 @@ bool web_en = false;
 char* auth_password = "ARP";
 //Set DEBUG status
 bool debug = false;
-//Set acket rate (e.g. 1500 = every 1.5 seconds)
+//Set packet rate (e.g. 1500 = every 1.5 seconds)
 int packetRate = 1500; 
 
 //ARP reply packet
@@ -171,12 +171,14 @@ if(web_en){
     // Output HTML page        
     BufferFiller bfill = ether.tcpOffset();
     bfill.emit_p(PSTR("HTTP/1.0 200 OK\r\n"
-      "Content-Type: text/html\r\nPragma: no-cache\r\n\r\n"
-      "<html><head><title>ARP Panel</title></head>"
+      "Content-Type: text/html\r\n\r\n"
+      "<html><body><head><title>ARP Panel</title></head>"
+      "<h1>ARP Spoofer - WebPanel</h1><br>"
+      "More info on the <a href=\"https://github.com/spacehuhn/enc28j60_ARPspoofer\">GitHub</a> page"
       "<body><form method=\"POST\">"));
     // Enable / disable buttons based on the output status
-    if(toggle_status == true) bfill.emit_p(PSTR("</p><div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
-    else bfill.emit_p(PSTR("</p><div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
+    if(toggle_status == true) bfill.emit_p(PSTR("<div><button style=\"width: 200px; display:none;\" name=\"ON\" disabled>Turn ON</button><br><button style=\"width: 200px\" name=\"OFF\">Turn OFF</button></div>"));
+    else bfill.emit_p(PSTR("<div><button style=\"width: 200px\" name=\"ON\">Turn ON</button><br><button style=\"width: 200px; display:none;\" name=\"OFF\" disabled>Turn OFF</button></div>"));
 
     // A wrong password was entered?
     if(password_valid == true){ 
@@ -194,7 +196,8 @@ if(web_en){
     bfill.emit_p(PSTR("MY IP: $D"), ether.myip);  
     bfill.emit_p(PSTR("Gateway IP: $D"), ether.gwip);  
     bfill.emit_p(PSTR("DNS IP: $D"), ether.dnsip);
-    */     
+    */
+    bfill.emit_p(PSTR("</div>"));     
     ether.httpServerReply(bfill.position());
   }else{
       tmp_status = true;

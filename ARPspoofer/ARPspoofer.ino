@@ -11,7 +11,7 @@
 
 // ===== Settings ===== //
 //#define webinterface /* <-- uncomment that if you want to use the webinterface */
-//#define debug /* <-- uncomment that if you want to use get a serial output */
+//#define debug /* <-- uncomment that if you want to get a serial output */
 #define led 13
 #define auth_password "ARP"
 int packetRate = 20; //packets send per second
@@ -22,7 +22,6 @@ byte Ethernet::buffer[700];
 int arp_count = 0;
 unsigned long prevTime = 0;
 bool connection = false;
-int packetRate = 100;
 bool toggle_status = false;
 bool tmp_status = true;
 

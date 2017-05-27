@@ -9,12 +9,12 @@
 #include <EtherCard.h>
 #include <net.h>
 
+// ===== Settings ===== //
 //#define webinterface /* <-- uncomment that if you want to use the webinterface */
 //#define debug /* <-- uncomment that if you want to use get a serial output */
-
-//Settings
 #define led 13
 #define auth_password "ARP"
+int packetRate = 20; //packets send per second
 static uint8_t mymac[] = { 0xc0, 0xab, 0x03, 0x22, 0x55, 0x99 };
 
 byte Ethernet::buffer[700];
@@ -44,7 +44,7 @@ uint8_t _data[48] = {
 bool sendARP() {
   long curTime = millis();
 
-  if (prevTime < curTime - packetRate) {
+   if (curTime - prevTime > 1000/packetRate) {
     digitalWrite(led, HIGH);
 
     for (int i = 0; i < 48; i++) ether.buffer[i] = _data[i];

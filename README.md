@@ -73,7 +73,7 @@ static uint8_t mymac[] = { 0xc0, 0xab, 0x03, 0x22, 0x55, 0x99 };
 
 **4. Upload the code**
 
-Compile & upload the sketch to your Arduino and your done :)  
+Compile & upload the sketch to your Arduino and you are done :)  
 
 
 ## How to use it
@@ -89,7 +89,7 @@ The IP will be printed out in the serial monitor and the default password is `AR
 
 ## License
 
-This project is licensed under the MIT License - see the [license file](LICENSE) file for details.
+This project is licensed under the MIT License - see the [license file](LICENSE) for details.
 
 ## Sources and additional links
 

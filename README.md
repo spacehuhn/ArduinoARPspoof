@@ -3,9 +3,8 @@ Kicks out everyone in your LAN with Arduino and an ENC28J60 ethernet controller.
 
 ![ENC28J60 ethernet shield + Arduino nano plugged in and working](https://raw.githubusercontent.com/spacehuhn/enc28j60_ARPspoofer/master/images/1.jpg)  
 
-[**Support me and my projects on Patreon!**  
-<img width="450" alt="Support me on Patreon" src="https://raw.githubusercontent.com/spacehuhn/ArduinoARPspoof/master/images/patreon.png">](https://www.patreon.com/spacehuhn)  
-
+**Support me and my projects on [Patreon!](https://www.patreon.com/spacehuhn)**  
+[<img width="200" alt="Support me on Patreon" src="https://raw.githubusercontent.com/spacehuhn/ArduinoARPspoof/master/images/patreon.png">](https://www.patreon.com/spacehuhn)  
 
 
 ## Contents

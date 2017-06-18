@@ -3,7 +3,9 @@ Kicks out everyone in your LAN with Arduino and an ENC28J60 ethernet controller.
 
 ![ENC28J60 ethernet shield + Arduino nano plugged in and working](https://raw.githubusercontent.com/spacehuhn/enc28j60_ARPspoofer/master/images/1.jpg)  
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RCHANSVSX9M8C)  
+**Support me and my projects on [Patreon!](https://www.patreon.com/spacehuhn)**  
+[<img width="200" alt="Support me on Patreon" src="https://raw.githubusercontent.com/spacehuhn/ArduinoARPspoof/master/images/patreon.png">](https://www.patreon.com/spacehuhn)  
+
 
 ## Contents
 - [Introduction](#introduction)
@@ -73,7 +75,7 @@ static uint8_t mymac[] = { 0xc0, 0xab, 0x03, 0x22, 0x55, 0x99 };
 
 **4. Upload the code**
 
-Compile & upload the sketch to your Arduino and your done :)  
+Compile & upload the sketch to your Arduino and you are done :)  
 
 
 ## How to use it
@@ -89,7 +91,7 @@ The IP will be printed out in the serial monitor and the default password is `AR
 
 ## License
 
-This project is licensed under the MIT License - see the [license file](LICENSE) file for details.
+This project is licensed under the MIT License - see the [license file](LICENSE) for details.
 
 ## Sources and additional links
 

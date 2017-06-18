@@ -17,7 +17,11 @@
 int packetRate = 20; //packets send per second
 static uint8_t mymac[] = { 0xc0, 0xab, 0x03, 0x22, 0x55, 0x99 };
 
+#ifdef webinterface
 byte Ethernet::buffer[700];
+#else
+byte Ethernet::buffer[400];
+#endif
 
 int arp_count = 0;
 unsigned long prevTime = 0;

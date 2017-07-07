@@ -28,12 +28,12 @@ Using an Arduino with an ethernet controller, this device will perform an [ARP s
 
 ### How it works
 
-It will constanly send ARP replies to every device in the LAN and tell them that the gateway is at a random MAC adress.  
-The gateway is basically the link between your local network and the internet. By telling everyone it's at an adress that doesn't exist, nobody will be able to communicate to it anymore and by that, loose the connection.  
+It will constantly send ARP replies to every device in the LAN and tell them that the gateway is at a random MAC address.  
+The gateway is basically the link between your local network and the internet. By telling everyone it's at an address that doesn't exist, nobody will be able to communicate to it anymore and by that, loose the connection.  
 
 ### What an ENC28J60 is
 
-The ENC28J60 is a cheap 10mbit SPI ethernet controller for Arduino. Because it has a very open and easy hackable library, it's perfect for this project and you could even programm a man-in-the-middle attack or other funny stuff with it.
+The ENC28J60 is a cheap 10mbit SPI ethernet controller for Arduino. Because it has a very open and easy hackable library, it's perfect for this project and you could even program a man-in-the-middle attack or other funny stuff with it.
 
 ![ENC28J60 ethernet shield and an Arduino nano](https://raw.githubusercontent.com/spacehuhn/enc28j60_ARPspoofer/master/images/2.jpg)
 

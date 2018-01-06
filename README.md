@@ -29,7 +29,7 @@ Using an Arduino with an ethernet controller, this device will perform an [ARP s
 ### How it works
 
 It will constanly send ARP replies to every device in the LAN and tell them that the gateway is at a random MAC adress.  
-The gateway is basically the link between your local network and the internet. By telling everyone it's at an adress that doesn't exist, nobody will be able to communicate to it anymore and by that, loose the connection.  
+The gateway is the link between your local network and the internet. By telling everyone it's at an adress that doesn't exist, nobody will be able to communicate to it anymore and by that, lose the connection.  
 
 ### What an ENC28J60 is
 
@@ -44,11 +44,11 @@ Note: I haven't tested it on such protected hardware yet.
 
 ## Disclaimer
 
-Use it only for testing purposes on your own network!  
+**Use it only for testing purposes on your own network!**  
 
 ## Installation
 
-You will need an Arduino and (of course) an ENC28J60.  
+You will need an Arduino and an ENC28J60.  
 If you buy an Arduino ethernet shield be sure it **doesn't** use a wiznet controller (e.g. w5100 or w5500), **this project will only work with an ENC28J60!**
 
 **1. Wire everything up**
@@ -80,7 +80,7 @@ Compile & upload the sketch to your Arduino and you are done :)
 
 ## How to use it
 
-Power it over USB and plug in an ethernet cable, that's all!  
+Power it over USB and plug in an ethernet cable.  
 
 **Using the WebInterface:**  
 If you uncommented `webinterface` in the code, the Arduino won't start the attack by itself.
